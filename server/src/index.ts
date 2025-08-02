@@ -4,10 +4,7 @@ import { createHTTPServer } from '@trpc/server/adapters/standalone';
 import 'dotenv/config';
 import cors from 'cors';
 import superjson from 'superjson';
-import { greetingInputSchema } from './schema';
-import { getHello } from './handlers/get_hello';
-import { createGreeting } from './handlers/create_greeting';
-import { getGreetings } from './handlers/get_greetings';
+import { getHelloWorld } from './handlers/hello_world';
 
 const t = initTRPC.create({
   transformer: superjson,
@@ -17,16 +14,11 @@ const publicProcedure = t.procedure;
 const router = t.router;
 
 const appRouter = router({
+  hello: publicProcedure
+    .query(() => getHelloWorld()),
   healthcheck: publicProcedure.query(() => {
     return { status: 'ok', timestamp: new Date().toISOString() };
   }),
-  hello: publicProcedure
-    .query(() => getHello()),
-  createGreeting: publicProcedure
-    .input(greetingInputSchema)
-    .mutation(({ input }) => createGreeting(input)),
-  getGreetings: publicProcedure
-    .query(() => getGreetings()),
 });
 
 export type AppRouter = typeof appRouter;
